@@ -1,0 +1,22 @@
+.page-header
+  = link_to new_role_path, :class => 'btn btn-primary' do
+    %span.glyphicon.glyphicon-plus
+    New Role
+  %h1 Listing roles
+
+.table-responsive
+  %table.table.table-striped.table-bordered.table-hover
+    %thead
+      %tr
+        %th Name
+        %th
+        %th
+        %th
+
+    %tbody
+      - @roles.each do |role|
+        %tr
+          %td= role.name
+          %td= link_to 'Show', role
+          %td= link_to 'Edit', edit_role_path(role)
+          %td= link_to 'Destroy', role, :data => { confirm: 'Are you sure?' }, :method => :delete

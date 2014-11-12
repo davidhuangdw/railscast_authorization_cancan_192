@@ -1,0 +1,20 @@
+.page-header
+  = link_to comments_path, :class => 'btn btn-default' do
+    %span.glyphicon.glyphicon-list-alt
+    Back
+  = link_to edit_comment_path(@comment), :class => 'btn btn-primary' do
+    %span.glyphicon.glyphicon-pencil
+    Edit
+  %h1 Show comment
+
+%dl.dl-horizontal
+  %dt Article:
+  %dd= @comment.article
+  %dt User:
+  %dd= @comment.user
+  %dt Author name:
+  %dd= @comment.author_name
+  %dt Site url:
+  %dd= @comment.site_url
+  %dt Content:
+  %dd= @comment.content

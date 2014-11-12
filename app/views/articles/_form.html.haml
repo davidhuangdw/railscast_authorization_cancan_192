@@ -1,0 +1,11 @@
+= simple_form_for(@article) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :name
+    = f.input :content
+    = f.input :author_name
+    = f.association :user
+
+  .form-actions
+    = f.button :submit
