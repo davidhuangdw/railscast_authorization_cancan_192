@@ -7,7 +7,7 @@ module ApplicationHelper
     field_method = method(field_method.to_sym)
     form_group do
       label_tag(column) +
-          field_method.call(column,params[column], class:'form-control')
+          field_method.call(column, params[column], class:'form-control')
     end
   end
 

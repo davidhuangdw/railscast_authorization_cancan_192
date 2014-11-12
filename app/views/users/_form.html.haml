@@ -8,6 +8,10 @@
     = f.input :password_confirmation
     = f.input :role
     = f.input :roles_mask
+    - User::ROLES.each do |role|
+      .form-group
+        = label_tag role
+        = check_box_tag role, params[role.to_sym], params[role.to_sym]
 
   .form-actions
     = f.button :submit
