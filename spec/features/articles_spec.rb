@@ -15,7 +15,7 @@ shared_examples_for 'user capabilities on articles' do
 
   it "can manage all articles" do
     %w(Show Edit Destroy).each do |link|
-      if abilities.include? link.downcase
+      if Array(abilities).include? link.downcase
         expect(page).to have_link link
       else
         expect(page).not_to have_link link
@@ -27,6 +27,7 @@ end
 feature "Articles", :type => :feature do
   let!(:article) {create(:article)}
   let!(:another_article) {create(:article)}
+  let(:full_abilities){%w(show edit destroy)}
   context "When not logged in" do
     before {visit articles_path}
     it "allow guest to read all articles" do
@@ -38,14 +39,31 @@ feature "Articles", :type => :feature do
     end
   end
 
-  context "When login as admin" do
+  context "When login as normal user"  do
     let(:user) {create(:user)}
-    let(:abilities) {%w{show}}
+    describe "Only able to read" do
+      let(:abilities) {'show'}
+      it_should_behave_like 'user capabilities on articles'
+    end
+
+    describe "able to manage its own articles" do
+      let!(:user_article) {create(:article, user:user)}
+      let(:abilities) {full_abilities}
+      it_should_behave_like 'user capabilities on articles'
+    end
+  end
+
+  context "When login as admin" do
+    let(:user) {create(:admin)}
+    let(:abilities) { full_abilities }
     it_should_behave_like 'user capabilities on articles'
   end
-  context "When login as normal user" do
-    let(:user) {create(:admin)}
-    let(:abilities) {%w{show edit destroy}}
-    it_should_behave_like 'user capabilities on articles'
+
+  context "when access disallowed page" do
+    it "should alert and redirect to root page" do
+      visit new_article_path
+      expect(current_path).to eq(root_path)
+      expect(page).to have_content 'Access denied'
+    end
   end
 end

@@ -1,28 +1,55 @@
-== README
+        # handle exception
+        # application_controller.rb
+          rescue_from CanCan::AccessDenied do |exception|
+            redirect_to root_url, alert: 'Access denied.'
+          end
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+        # controller
+        class ArticlesController < ..
+          load_and_authorize_resource
+          authorize_resource
+          skip_authorization_check
+        end
+        class ApplicationController < ActionController::Base
+          check_authorization           # ensure 'authorize_resource' under each controller/action
+        end
 
-Things you may want to cover:
+        rails g cancan:ability
+        # define ability
+        can :manage, Project
+        cannot :destroy, Project
 
-* Ruby version
+        can :read, Project, :priority => 1..3
+        can :read, Project, :active => true, :user_id => user.id
+        can :manage, Project, :group => { :id => user.group_ids }
+        can :read, Project, :category => { :visible => true }
+        class Photo
+          scope :unowned, includes(:groups).where(:groups => {:id => nil})  # left out join
+        end
+        can :read, Photo, Photo.unowned do |photo|
+          photo.groups.empty?
+        end
 
-* System dependencies
+        # example
+        # models/ability.rb
+        class Ability
+          include CanCan::Ability
+          def initialize(user)
+            user ||= User.new   # guest user
+            if user.role? :admin
+              can :manage, :all
+            else
+              can :read, :all
+              can [:update, :destroy], Article do |article|
+                article.try(:user) == user
+              end
+              if user.role?(:author)
+                can :create, Article
+              end
+            end
+          end
+        end
 
-* Configuration
 
-* Database creation
+        gem 'cancan'
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.

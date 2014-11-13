@@ -7,6 +7,12 @@ class Ability
       can :manage, :all
     else
       can :read, :all
+      can [:update, :destroy], Article do |article|
+        article.try(:user) == user
+      end
+      if user.role?(:author)
+        can :create, Article
+      end
     end
     # Define abilities for the passed in user here. For example:
     #
