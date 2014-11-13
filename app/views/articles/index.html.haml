@@ -23,6 +23,6 @@
           %td= article.content
           %td= article.author_name
           %td= article.user
-          %td= link_to 'Show', article
-          %td= link_to 'Edit', edit_article_path(article)
-          %td= link_to 'Destroy', article, :data => { confirm: 'Are you sure?' }, :method => :delete
+          %td= link_to_if can?(:read, article), 'Show', article
+          %td= link_to_if can?(:edit, article), 'Edit', edit_article_path(article)
+          %td= link_to_if can?(:destroy, article), 'Destroy', article, :data => { confirm: 'Are you sure?' }, :method => :delete

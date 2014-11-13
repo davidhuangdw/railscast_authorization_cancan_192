@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature "Signups", :focus, :type => :feature do
+feature "Signups", :type => :feature do
   before {visit signup_path}
   it "should allow to check each role" do
     User::ROLES.each do |role|
